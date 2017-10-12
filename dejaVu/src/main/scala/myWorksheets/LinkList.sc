@@ -49,10 +49,7 @@ def lengthLinkList[A](ll: Link[A]): Int = ll match {
 lengthLinkList(a)
 
 def getLinkFromIndex[A](index: Int, ll: Link[A]): Link[A] = index match {
-  case 0 => ll match {
-    case Empty() => throw new Exception("no element at index")
-    case NonEmptyLink(v, n) => ll
-  }
+  case 0 => ll
   case _ => ll match {
     case Empty() => throw new Exception("no element at index")
     case NonEmptyLink(v, n) => getLinkFromIndex(index - 1, n)
@@ -144,6 +141,17 @@ def mergeSortedLinkedLists[A](ll1: Link[A], ll2: Link[A])(implicit f: A => Order
         NonEmptyLink(v2, mergeSortedLinkedLists(ll1, n2))
       }
   }
+}
+
+def mergeSortedLinkedLists1[A](ll1: Link[A], ll2: Link[A])(implicit f: A => Ordered[A]): Link[A] = (ll1, ll2) match {
+  case (Empty(), _) => ll2
+  case (_, Empty()) => ll1
+  case (NonEmptyLink(v1, n1), NonEmptyLink(v2, n2)) =>
+    if (v1 < v2) {
+      NonEmptyLink(v1, mergeSortedLinkedLists1(n1, ll2))
+    } else {
+      NonEmptyLink(v2, mergeSortedLinkedLists1(ll1, n2))
+    }
 }
 
 mergeSortedLinkedLists(listToLinkedList(List(1, 3, 7, 9, 16)), listToLinkedList(List(2, 4, 5, 10, 11, 18)))
